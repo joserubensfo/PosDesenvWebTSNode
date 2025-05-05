@@ -1,7 +1,7 @@
 import data from '../base/products.json';
 import { Product } from "./models/Product";
 import { ProductService } from "./services/ProductService";
-import fs from 'fs';
+import fs, { writeFile } from 'fs/promises';
 
 const listProducts = (data: any[]): Product[] => {
     return data.map((item) => {
@@ -34,7 +34,7 @@ const main = async () => {
     const allowedCategories = await service.checkCategories(categories)
     const filteredProducts = filterProductsByCategory(products, allowedCategories);
     
-    fs.writeFileSync('../base/processed.json', JSON.stringify(filteredProducts.map((product) => ({ id: product.id, name: product.name}))));
+    fs.writeFile('./base/processed.json', JSON.stringify(filteredProducts.map((product) => ({ id: product.id, name: product.name}))));
 }
 
 setInterval(main, 10 * 1000);

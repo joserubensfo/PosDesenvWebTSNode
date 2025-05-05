@@ -7,17 +7,16 @@ export class ProductService{
     }
 
     async checkCategories(categories: string[]): Promise<string[]> {
-        const promises = categories.map(async (category) => {
+        const result = await Promise.all(categories.map(async (category) => {
             const response = await fetch(`${this.urlBase}?category=${category}`);
             
-            if (response.ok) {
-                const data = await response.json();
-                return data.allowed ? category : null;
-            }
-            return null;
-        });
-    
-        const results = await Promise.all(promises);
-        return results.filter((category) => category !== null) as string[];
+            if(!response.ok)
+                return null;
+
+            const data = await response.json();
+            return data.allowed ? category : null;
+        }));
+
+        return result.filter((category): category is string => category !== null);
     }
 }
